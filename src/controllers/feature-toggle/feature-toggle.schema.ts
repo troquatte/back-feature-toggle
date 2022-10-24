@@ -12,7 +12,10 @@ export class FeatureToggle {
   apiKey: string;
 
   @Prop({ required: true })
-  itensEnvironment: [string, [[string, boolean]]];
+  itensEnvironment: Array<{
+    env: string;
+    toggle: Array<{ name: string; value: boolean }>;
+  }>;
 }
 
 export const FeatureToggleSchema = SchemaFactory.createForClass(FeatureToggle);

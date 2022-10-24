@@ -67,34 +67,32 @@ export class FeatureToggleService {
     return await find.delete();
   }
 
-  public async consumer(
-    featureToggleConsumer: IFeatureToggleConsumer,
-    _id: string,
-  ): Promise<any> {
-    if (!featureToggleConsumer.apiKey || !_id) {
+  public async consumer(apiKey: string, env: string): Promise<any> {
+    if (!apiKey || !env) {
       throw new NotFoundException('Not found Feature Toggle');
     }
 
     const find: IFeatureToggle = await this.featureToggleModel.findOne({
-      _id,
-      apiKey: featureToggleConsumer.apiKey,
+      apiKey,
     });
 
     const consumer: any = find.itensEnvironment.find((res) => {
-      return res[0] === featureToggleConsumer.env;
+      return res.env === env;
     });
 
     if (!consumer) {
       throw new NotFoundException('Not found Feature Toggle');
     }
 
-    const toggles = consumer[1].reduce(function (prev, curr) {
-      prev[curr[0]] = curr[1];
+    const toggles = consumer.toggle.reduce((prev: any, curr: any) => {
+      prev[curr.name] = curr.value;
+      delete prev.name;
+      delete prev.value;
       return prev;
     }, {});
 
     return {
-      env: consumer[0],
+      env,
       toggles,
     };
   }

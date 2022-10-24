@@ -17,12 +17,12 @@ export class FeatureToggleController {
     return this.featureToggleService.findAll();
   }
 
-  @Post('/consumer/:_id')
+  @Get('/consumer/:apiKey/:env')
   public async consumer(
-    @Param('_id') _id: string,
-    @Body() featureToggleConsumer: IFeatureToggleConsumer,
+    @Param('env') env: string,
+    @Param('apiKey') apiKey: string,
   ): Promise<any> {
-    return this.featureToggleService.consumer(featureToggleConsumer, _id);
+    return this.featureToggleService.consumer(apiKey, env);
   }
 
   @Post()
