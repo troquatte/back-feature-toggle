@@ -21,7 +21,7 @@ export class FeatureToggleController {
   public async consumer(
     @Param('env') env: string,
     @Param('apiKey') apiKey: string,
-  ): Promise<any> {
+  ): Promise<IFeatureToggleConsumer> {
     return this.featureToggleService.consumer(apiKey, env);
   }
 

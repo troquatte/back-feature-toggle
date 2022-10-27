@@ -76,6 +76,10 @@ export class FeatureToggleService {
       apiKey,
     });
 
+    if (!find) {
+      throw new NotFoundException('Not found Feature Toggle');
+    }
+
     const consumer: any = find.itensEnvironment.find((res) => {
       return res.env === env;
     });
