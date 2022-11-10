@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Request } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -7,7 +8,6 @@ import { v4 as uuid } from 'uuid';
 
 // Schemas
 import { FeatureToggle, FeatureToggleDocument } from './feature-toggle.schema';
-import { IFeatureToggleConsumer } from './interface/feature-toggle-consumer.interface';
 
 // Interfaces
 import { IFeatureToggle } from './interface/feature-toggle.interface';
@@ -99,5 +99,34 @@ export class FeatureToggleService {
       env,
       toggles,
     };
+  }
+
+  public async consumerChange(featureToggleChange): Promise<any> {
+    const { apiKey, env, toggleName, toggleValue } = featureToggleChange;
+
+    if (!apiKey || !env || !toggleName || toggleValue === undefined) {
+      throw new NotFoundException('Not found Feature Toggle');
+    }
+
+    const find = await this.featureToggleModel.findOne({
+      apiKey,
+    });
+
+    let payload: any = find.itensEnvironment.find((res) => {
+      return res.env === env;
+    });
+
+    payload = payload.toggle.find((res) => {
+      return res.name === toggleName;
+    });
+
+    if (!payload) {
+      throw new NotFoundException('Not found Feature Toggle');
+    }
+
+    payload.value = toggleValue;
+    await find.update(find);
+
+    return await this.featureToggleModel.findById(find._id);
   }
 }

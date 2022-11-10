@@ -7,3 +7,10 @@ export interface IFeatureToggle {
     toggle: Array<{ name: string; value: boolean }>;
   }>;
 }
+
+export interface IFeatureToggleChange {
+  apiKey: string;
+  env: string;
+  toggleName: string;
+  toggleValue: Boolean;
+}

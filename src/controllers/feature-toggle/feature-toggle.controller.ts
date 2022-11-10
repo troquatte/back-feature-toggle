@@ -1,12 +1,24 @@
 import { Controller } from '@nestjs/common';
-import { Body, Delete, Get, Param, Post, Put } from '@nestjs/common/decorators';
+import {
+  Body,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+} from '@nestjs/common/decorators';
+import { Request } from 'express';
 
 // Services
 import { FeatureToggleService } from './feature-toggle.service';
-import { IFeatureToggleConsumer } from './interface/feature-toggle-consumer.interface';
 
 // Interfaces
-import { IFeatureToggle } from './interface/feature-toggle.interface';
+import {
+  IFeatureToggle,
+  IFeatureToggleChange,
+} from './interface/feature-toggle.interface';
+import { IFeatureToggleConsumer } from './interface/feature-toggle-consumer.interface';
 
 @Controller('feature-toggle')
 export class FeatureToggleController {
@@ -21,8 +33,15 @@ export class FeatureToggleController {
   public async consumer(
     @Param('env') env: string,
     @Param('apiKey') apiKey: string,
-  ): Promise<IFeatureToggleConsumer> {
+  ): Promise<any> {
     return this.featureToggleService.consumer(apiKey, env);
+  }
+
+  @Post('/consumer/change/')
+  public async consumerChange(
+    @Body() featureToggleChange: IFeatureToggleChange,
+  ): Promise<any> {
+    return this.featureToggleService.consumerChange(featureToggleChange);
   }
 
   @Post()
