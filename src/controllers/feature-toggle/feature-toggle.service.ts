@@ -52,7 +52,7 @@ export class FeatureToggleService {
       throw new NotFoundException('Not found Feature Toggle');
     }
 
-    await find.update(featureToggleDto);
+    await find.updateOne(featureToggleDto);
 
     return await this.featureToggleModel.findById(featureToggleDto._id);
   }
@@ -125,7 +125,7 @@ export class FeatureToggleService {
     }
 
     payload.value = toggleValue;
-    await find.update(find);
+    await find.updateOne(find);
 
     return await this.featureToggleModel.findById(find._id);
   }
